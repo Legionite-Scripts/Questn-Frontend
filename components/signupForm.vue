@@ -1,9 +1,21 @@
 <template>
-  <form class="flexed-column p-2 text-center">
+  <form class="flexed-column p-2 text-center" @submit.prevent="handleSignup">
     <h2 class="mt-4 mb-4 weight-4">Create Account</h2>
-    <input type="email" placeholder="Email Address" class="mb-2" />
-    <input type="password" placeholder="Password" class="mb-2" />
-    <button class="mb-3">Sign up</button>
+    <input
+      type="email"
+      placeholder="Email Address"
+      class="mb-2"
+      v-model="email"
+      required
+    />
+    <input
+      type="password"
+      placeholder="Password"
+      class="mb-2"
+      v-model="password"
+      required
+    />
+    <button class="mb-3" type="submit">Sign up</button>
     <p class="mb-2">Already have an account? <a href="#">Login</a></p>
     <p class="mb-2">
       By continuing, you agree with
@@ -13,7 +25,37 @@
   </form>
 </template>
 
-<script></script>
+<script setup>
+import { ref } from "vue";
+import { useToast } from "vue-toastification";
+
+const toast = useToast();
+
+const email = ref("");
+const password = ref("");
+
+const handleSignup = async () => {
+  const { data, error } = await useFetch(
+    "http://139.162.163.126/v1/auth/signup",
+    {
+      method: "POST",
+      body: {
+        email: email.value,
+        password: password.value,
+      },
+    }
+  );
+
+  if (error.value) {
+    console.error("Signup error:", error.value);
+    // Handle error (e.g., show error message to user)
+  } else {
+    toast.success("Signup Successfull");
+    console.log("Signup successful:", data.value);
+    // Handle successful signup (e.g., redirect to login page or dashboard)
+  }
+};
+</script>
 
 <style scoped>
 form {
