@@ -28,8 +28,10 @@
 <script setup>
 import { ref } from "vue";
 import { useToast } from "vue-toastification";
+import { useAuthStore } from "~/stores/authStore";
 
 const toast = useToast();
+const authStore = useAuthStore();
 
 const email = ref("");
 const password = ref("");
@@ -47,13 +49,14 @@ const handleLogin = async () => {
   );
 
   if (error.value) {
-    toast.error("Signup Error, Please try again");
-    console.error("Signup error:", error.value);
+    toast.error("Login Error, Please try again");
+    console.error("Login error:", error.value);
     // Handle error (e.g., show error message to user)
   } else {
-    toast.success("Signup Successfull");
-    console.log("Signup successful:", data.value);
-    // Handle successful signup (e.g., redirect to login page or dashboard)
+    authStore.setCredentials(email.value, password.value); //Save Email and password to pinia
+    toast.success("Login Successfull");
+    console.log("login successful:", data.value);
+    // Handle successful login (e.g., redirect to login page or dashboard)
   }
 };
 </script>
